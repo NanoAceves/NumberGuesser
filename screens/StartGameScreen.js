@@ -4,13 +4,45 @@ import { useState } from 'react'
 import Card from '../components/Card';
 import Colors from '../constants/colors';
 import Input from '../components/Input';
+import NumberContainer from '../components/NumberContainer';
 
-const StartGameScreen = () => {
-
+const StartGameScreen = ({onStartGame}) => {
+    const [confirmed, setConfirmed]=useState(false)
     const [enteredValue, setEnteredValue]=useState('')
+    const [selectedNumber, setSelectedNumer]=useState(undefined)
+
     const numberInputHandler=input=>(
         setEnteredValue(input.replace(/[^0-9]/g, ''))
     )
+
+    const resetInputHandler=()=>{
+        setEnteredValue('')
+        setConfirmed(false)
+    }
+    const confirmInputHandler=()=>{
+        const chosenNumber=parseInt(enteredValue)
+        if (isNaN(chosenNumber)||chosenNumber<=0||chosenNumber>99) return
+
+        setConfirmed(true)
+        setSelectedNumer(chosenNumber)
+        setEnteredValue('')
+    }
+
+    let confirmedOutput;
+
+    if (confirmed){
+        confirmedOutput=(
+            <Card style={styles.selectedContainer}>
+                <Text>You selected: </Text>
+                <NumberContainer>
+                    {selectedNumber}
+                </NumberContainer>
+                <Button title='Ready to start game?'
+                onPress={()=>onStartGame(selectedNumber)}/>
+            </Card>
+            
+        )
+    }
 
   return (
     <View style={styles.screen}>
@@ -29,6 +61,7 @@ const StartGameScreen = () => {
             <View style={styles.buttonContainer}>
                 <View style={styles.button}>
                     <Button
+                    style={styles.button}
                         title="Reset"
                         color={Colors.primary}
                         onPress={()=>{}}
@@ -37,13 +70,15 @@ const StartGameScreen = () => {
                 
                 <View style={styles.button}>
                     <Button
+                    style={styles.button}
                         title="Confirm"
                         color={Colors.secondary}
-                        onPress={()=>{}}
+                        onPress={confirmInputHandler}
                     />
                 </View>
             </View>
         </Card>
+        {confirmedOutput}
     </View>
   )
 }
@@ -52,15 +87,14 @@ const styles = StyleSheet.create({
   screen: {
       flex:1,
       padding:10,
-      alignItems:'center',
-      flexDirection:'column'
+      alignItems:'center'
   },
   title:{
       fontSize:20,
       marginVertical:10,
   },
   button:{
-
+      width:100,
   },
   buttonContainer:{
       flexDirection:'row',
@@ -71,6 +105,11 @@ const styles = StyleSheet.create({
   input:{
       width:50,
       textAlign:'center'
+  },
+  selectedContainer:{
+      marginTop:20,
+      alignItems:'center',
+      justifyContent:'center'
   },
 });
 
