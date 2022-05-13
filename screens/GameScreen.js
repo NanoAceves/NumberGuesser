@@ -5,6 +5,7 @@ import NumberContainer from '../components/NumberContainer';
 import Colors from '../constants/Colors';
 
 import { direction_ as d} from '../constants/constants';
+import { useFetchPokemon } from "../hooks/useFetchpokemon";
 
 
 const generateRandomBetween = (min, max, exclude) => {
@@ -32,6 +33,9 @@ const GameScreen = ({selectedNumber, onGameOver}) => {
 
     const [rounds, setRounds] = useState(0)
 
+    const [name, setName] = useState(undefined)
+    const [img, setImg]=useState(undefined)
+
     useEffect(() => {
       if(currentGuess === selectedNumber) {
         onGameOver(rounds, currentGuess)
@@ -40,6 +44,13 @@ const GameScreen = ({selectedNumber, onGameOver}) => {
     
 
     console.log(currentGuess);
+
+    const setPokemon = async () => {
+      const [name] = await useFetchPokemon(currentGuess);
+      setName(name)
+      const [img]=await useFetchPokemon(currentGuess);
+      setImg(img)
+    } 
 
     const nextGuess = direction => {
         if( (direction === d.higher && currentGuess > selectedNumber ) ||
@@ -58,6 +69,7 @@ const GameScreen = ({selectedNumber, onGameOver}) => {
         const nextNum = generateRandomBetween(currentLow.current, currentHigh.current, currentGuess);
         setRounds(currentRounds => setRounds(currentRounds + 1))
         setCurrentGuess(nextNum);
+        setPokemon()
 
     }
 
@@ -68,6 +80,10 @@ const GameScreen = ({selectedNumber, onGameOver}) => {
       <Card style={styles.buttonContainer}>
           <Button title='Lower' color={Colors.secondary} onPress={ () => {nextGuess(d.lower)} } />
           <Button title='Higher' color={Colors.primary} onPress={ () => {nextGuess(d.higher)} } />
+      </Card>
+      <Card style={styles.pokemonContainer}>
+        {name}
+        {img}
       </Card>
     </View>
   )
@@ -83,6 +99,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     marginTop: 20,
+  },
+  pokemonContainer:{
+    alignItems: 'center',
   }
 })
 

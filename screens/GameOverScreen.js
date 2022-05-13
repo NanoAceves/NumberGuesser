@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
         margin: 10,
     },
     gameOverBox: {
-        shadowColor: Colors.tertiary,
+        shadowColor: Colors.primary,
     },
 })
 

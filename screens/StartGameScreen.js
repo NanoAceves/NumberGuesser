@@ -90,7 +90,7 @@ import { useFetchPokemon } from "../hooks/useFetchpokemon";
             </View>
         </Card>
         {confirmedOutput}
-        {name}
+        <Card>{name}</Card>
      </View>
    )
  }
