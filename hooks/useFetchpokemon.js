@@ -6,9 +6,6 @@ export const useFetchPokemon = async ( dexNum ) => {
     console.log('response', response)
     const data = await response.json()
     const { name, sprites : { front_default : img} } = data
-    console.log('data', data);
-
-    console.log('img', img);
 
     return [
         name,

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Button, StyleSheet, Text, TextInput, View } from "react-native";
+import { Button, StyleSheet, Text, TextInput, View, Image } from "react-native";
 import Card from "../components/Card";
 import Colors from "../constants/Colors";
 import Input from "../components/Input";
@@ -15,6 +15,7 @@ import { useFetchPokemon } from "../hooks/useFetchpokemon";
     const [selectedNumber, setSelectedNumber] = useState(undefined)
 
     const [name, setName] = useState(undefined)
+    const [poke, setPoke]=useState({name:'', img:''})
 
     const numberInputHandler = input => {
         setEnteredValue(input.replace(/[^0-9]/g, ''));
@@ -36,8 +37,10 @@ import { useFetchPokemon } from "../hooks/useFetchpokemon";
     }
 
     const setPokemon = async () => {
-        const [name] = await useFetchPokemon(enteredValue);
+        const [name, img] = await useFetchPokemon(enteredValue);
         setName(name)
+
+        setPoke({name: name, img: img})
     } 
 
     let confirmedOutput;
@@ -52,7 +55,10 @@ import { useFetchPokemon } from "../hooks/useFetchpokemon";
                     onPress={ () => onStartGame(selectedNumber) }
                     color={Colors.tertiary}
                 />
+                <Text>{name}</Text>
+                <Image style={styles.pokeImage} source={{uri:poke.img}}/>
             </Card>
+            
         )
     }
 
@@ -90,7 +96,7 @@ import { useFetchPokemon } from "../hooks/useFetchpokemon";
             </View>
         </Card>
         {confirmedOutput}
-        <Card>{name}</Card>
+        
      </View>
    )
  }
@@ -122,6 +128,10 @@ import { useFetchPokemon } from "../hooks/useFetchpokemon";
      input: {
          width: 50,
          textAlign: 'center'
+     },
+     pokeImage:{
+         width:100, 
+         height:100
      }
 
  })

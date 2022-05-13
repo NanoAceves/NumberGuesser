@@ -1,5 +1,5 @@
 import React, {useState, useRef, useEffect} from 'react'
-import { Button, StyleSheet, Text, TextInput, View, Alert } from "react-native";
+import { Button, StyleSheet, Text, TextInput, View, Alert, Image } from "react-native";
 import Card from '../components/Card';
 import NumberContainer from '../components/NumberContainer';
 import Colors from '../constants/Colors';
@@ -34,7 +34,7 @@ const GameScreen = ({selectedNumber, onGameOver}) => {
     const [rounds, setRounds] = useState(0)
 
     const [name, setName] = useState(undefined)
-    const [img, setImg]=useState(undefined)
+    const [poke, setPoke]=useState({name:'', img:''})
 
     useEffect(() => {
       if(currentGuess === selectedNumber) {
@@ -46,11 +46,10 @@ const GameScreen = ({selectedNumber, onGameOver}) => {
     console.log(currentGuess);
 
     const setPokemon = async () => {
-      const [name] = await useFetchPokemon(currentGuess);
+      const [name, img] = await useFetchPokemon(currentGuess);
       setName(name)
-      const [img]=await useFetchPokemon(currentGuess);
-      setImg(img)
-    } 
+      setPoke({name: name, img: img})
+    }
 
     const nextGuess = direction => {
         if( (direction === d.higher && currentGuess > selectedNumber ) ||
@@ -80,11 +79,12 @@ const GameScreen = ({selectedNumber, onGameOver}) => {
       <Card style={styles.buttonContainer}>
           <Button title='Lower' color={Colors.secondary} onPress={ () => {nextGuess(d.lower)} } />
           <Button title='Higher' color={Colors.primary} onPress={ () => {nextGuess(d.higher)} } />
+          
       </Card>
-      <Card style={styles.pokemonContainer}>
-        {name}
-        {img}
-      </Card>
+       <Card>
+        <Text>{name}</Text>
+        <Image style={styles.pokeImage} source={{uri:poke.img}}/>
+       </Card>
     </View>
   )
 }
@@ -102,6 +102,10 @@ const styles = StyleSheet.create({
   },
   pokemonContainer:{
     alignItems: 'center',
+  },
+  pokeImage:{
+      width:100, 
+      height:100
   }
 })
 
